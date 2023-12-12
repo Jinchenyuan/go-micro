@@ -36,7 +36,7 @@ type quicListener struct {
 }
 
 func (q *quicClient) Close() error {
-	return q.quicSocket.st.Close()
+	return q.quicSocket.st.CloseWithError(0, "")
 }
 
 func (q *quicSocket) Recv(m *transport.Message) error {
@@ -118,8 +118,8 @@ func (q *quicTransport) Dial(addr string, opts ...transport.DialOption) (transpo
 		}
 	}
 	s, err := quic.DialAddr(addr, config, &quic.Config{
-		IdleTimeout: time.Minute * 2,
-		KeepAlive:   true,
+		MaxIdleTimeout: time.Minute * 2,
+		KeepAlive:      true,
 	})
 	if err != nil {
 		return nil, err
