@@ -13,7 +13,7 @@ import (
 )
 
 type quicSocket struct {
-	s   quic.Session
+	s   quic.Connection
 	st  quic.Stream
 	enc *gob.Encoder
 	dec *gob.Decoder
@@ -36,7 +36,7 @@ type quicListener struct {
 }
 
 func (q *quicClient) Close() error {
-	return q.quicSocket.st.CloseWithError(0, "")
+	return q.quicSocket.s.CloseWithError(0, "")
 }
 
 func (q *quicSocket) Recv(m *transport.Message) error {
@@ -51,7 +51,7 @@ func (q *quicSocket) Send(m *transport.Message) error {
 }
 
 func (q *quicSocket) Close() error {
-	return q.s.Close()
+	return q.s.CloseWithError(0, "")
 }
 
 func (q *quicSocket) Local() string {
